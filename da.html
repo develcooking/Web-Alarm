@@ -9,8 +9,7 @@
         border: 1px solid #ccc;
         margin-bottom: 10px;
         padding: 10px;
-        border-radius: 0.75em;
-        
+        position: relative; /* Um Positionierung für den edit-button zu ermöglichen */
     }
     .weekday-btn-container {
         display: flex;
@@ -19,9 +18,72 @@
     .weekday-btn-container div {
         margin-right: 10px;
     }
+    .custom-checkbox {
+        position: relative;
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 5px;
+    }
+    .custom-checkbox input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 24px;
+        width: 24px;
+        background-color: #eee;
+        border-radius: 50%;
+        z-index: -1;
+    }
+    .custom-checkbox input:checked ~ .checkmark {
+        background-color: #54f17b;
+    }
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+    .custom-checkbox input:checked ~ .checkmark:after {
+        display: none;
+    }
+    .custom-checkbox .checkmark:after {
+        content: "";
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: white;
+    }
     h1{
         text-align: center;
 
+    }
+    .edit-button {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        background-color: #2196F3;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 </style>
 </head>
@@ -51,33 +113,51 @@
 
                     const daysValue = item.daysValue;
 
-                    const weekdays = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
+                    const weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 
                     const weekdayContainer = document.createElement('div');
                     weekdayContainer.classList.add('weekday-btn-container');
 
-                    weekdays.forEach(day => {
+                    weekdays.forEach((day, index) => {
                         const checkboxDiv = document.createElement('div');
-                        const checkbox = document.createElement('input');
-                        checkbox.type = 'checkbox';
-                        checkbox.id = `${day.toLowerCase()}Checkbox`;
-                        checkbox.checked = daysValue[day];
+                        const checkbox = document.createElement('label');
+                        checkbox.classList.add('custom-checkbox');
+
+                        const input = document.createElement('input');
+                        input.type = 'checkbox';
+                        input.id = `${day.toLowerCase()}Checkbox`;
+                        input.checked = daysValue[Object.keys(daysValue)[index]];
 
                         // Preventing checkbox clicks
                         checkbox.addEventListener('click', function(event) {
                             event.preventDefault();
                         });
 
-                        const label = document.createElement('label');
-                        label.textContent = day;
-                        label.htmlFor = `${day.toLowerCase()}Checkbox`;
+                        const checkmark = document.createElement('span');
+                        checkmark.classList.add('checkmark');
+
+                        const labelText = document.createElement('span');
+                        labelText.textContent = day;
+                        checkbox.appendChild(input);
+                        checkbox.appendChild(checkmark);
+                        checkbox.appendChild(labelText);
 
                         checkboxDiv.appendChild(checkbox);
-                        checkboxDiv.appendChild(label);
                         weekdayContainer.appendChild(checkboxDiv);
                     });
 
                     jsonElement.appendChild(weekdayContainer);
+
+                    const editButton = document.createElement('div'); // Jetzt innerhalb der Schleife erstellt
+                    editButton.classList.add('edit-button');
+                    editButton.innerHTML = '&#9998;';
+
+                    // Add click event for edit button
+                    editButton.addEventListener('click', function() {
+                        console.log('Edit button clicked');
+                    });
+
+                    jsonElement.appendChild(editButton); // Hinzufügen des edit-buttons zum JSON-Element
                     jsonContainer.appendChild(jsonElement);
                 });
             })
