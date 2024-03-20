@@ -1,0 +1,87 @@
+[
+    {
+        "NameValue": {
+            "name": "da1"
+        },
+        "timeValue": {
+            "time": "08:06"
+        },
+        "daysValue": {
+            "Montag": false,
+            "Dienstag": false,
+            "Mittwoch": false,
+            "Donnerstag": false,
+            "Freitag": false,
+            "Samstag": false,
+            "Sonntag": false
+        }
+    },
+    {
+        "NameValue": {
+            "name": "da2"
+        },
+        "timeValue": {
+            "time": "08:06"
+        },
+        "daysValue": {
+            "Montag": false,
+            "Dienstag": false,
+            "Mittwoch": false,
+            "Donnerstag": true,
+            "Freitag": false,
+            "Samstag": false,
+            "Sonntag": false
+        }
+    },
+    {
+        "NameValue": {
+            "name": "daw"
+        },
+        "timeValue": {
+            "time": "08:06"
+        },
+        "daysValue": {
+            "Montag": false,
+            "Dienstag": false,
+            "Mittwoch": false,
+            "Donnerstag": true,
+            "Freitag": false,
+            "Samstag": false,
+            "Sonntag": false
+        }
+    },
+    {
+        "NameValue": {
+            "name": "daa"
+        },
+        "timeValue": {
+            "time": "08:06"
+        },
+        "daysValue": {
+            "Montag": false,
+            "Dienstag": false,
+            "Mittwoch": false,
+            "Donnerstag": true,
+            "Freitag": false,
+            "Samstag": false,
+            "Sonntag": false
+        }
+    },
+    {
+        "NameValue": {
+            "name": "daaa"
+        },
+        "timeValue": {
+            "time": "07:07"
+        },
+        "daysValue": {
+            "Montag": false,
+            "Dienstag": false,
+            "Mittwoch": false,
+            "Donnerstag": true,
+            "Freitag": true,
+            "Samstag": true,
+            "Sonntag": false
+        }
+    }
+]
