@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wochentags-Buttons</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+    .weekday-btn-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .weekday-btn {
+        margin: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+    }
+    .weekday-checkbox {
+       /* margin-right: 1px; /* Angepasst */
+        margin-bottom: 1em;
+    }
+    .weekday-text {
+        display: inline-block;
+        margin-right: 1em;
+    }
+    .timecl{
+        padding: 1em;
+    }
+</style>
+</head>
+<body>
+  
+<h2>Wochentags-Buttons</h2>
+
+<form >
+    <label for="weckerName0">Name des Weckers:</label><br>
+    <input type="text" id="weckerName"><br>
+</form>
+
+<div class="timecl">
+    <input type="text" id="timePick" value="08:06">
+</div>
+
+<div class="weekday-btn-container">
+    <div>
+        <input type="checkbox" id="montagCheckbox" class="weekday-checkbox">
+        <label for="montagCheckbox" class="weekday-text">Montag</label>
+    </div>
+    <div>
+        <input type="checkbox" id="dienstagCheckbox" class="weekday-checkbox">
+        <label for="dienstagCheckbox" class="weekday-text">Dienstag</label>
+    </div>
+    <div>
+        <input type="checkbox" id="mittwochCheckbox" class="weekday-checkbox">
+        <label for="mittwochCheckbox" class="weekday-text">Mittwoch</label>
+    </div>
+    <div>
+        <input type="checkbox" id="donnerstagCheckbox" class="weekday-checkbox">
+        <label for="donnerstagCheckbox" class="weekday-text">Donnerstag</label>
+    </div>
+    <div>
+        <input type="checkbox" id="freitagCheckbox" class="weekday-checkbox">
+        <label for="freitagCheckbox" class="weekday-text">Freitag</label>
+    </div>
+    <div>
+        <input type="checkbox" id="samstagCheckbox" class="weekday-checkbox">
+        <label for="samstagCheckbox" class="weekday-text">Samstag</label>
+    </div>
+    <div>
+        <input type="checkbox" id="sonntagCheckbox" class="weekday-checkbox">
+        <label for="sonntagCheckbox" class="weekday-text">Sonntag</label>
+    </div>
+</div>
+
+
+
+<script>
+
+
+        // Laden der JSON-Daten vom Server
+        window.onload = function() {
+        fetch('/selectedTime')
+            .then(response => response.json())
+            .then(data => {
+                // Name des Weckers
+                document.getElementById('weckerName').value = data.NameValue.name;
+
+                // Uhrzeit
+                document.getElementById('timePick').value = data.timeValue.time;
+
+                // Tage
+                document.getElementById('montagCheckbox').checked = data.daysValue.Montag;
+                document.getElementById('dienstagCheckbox').checked = data.daysValue.Dienstag;
+                document.getElementById('mittwochCheckbox').checked = data.daysValue.Mittwoch;
+                document.getElementById('donnerstagCheckbox').checked = data.daysValue.Donnerstag;
+                document.getElementById('freitagCheckbox').checked = data.daysValue.Freitag;
+                document.getElementById('samstagCheckbox').checked = data.daysValue.Samstag;
+                document.getElementById('sonntagCheckbox').checked = data.daysValue.Sonntag;
+                // Hier musst du die restlichen Tage ebenfalls setzen
+            })
+            .catch(error => console.error('Fehler beim Laden der Daten:', error));
+    }
+</script>
+</body>
+</html>
