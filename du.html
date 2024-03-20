@@ -9,6 +9,7 @@
         border: 1px solid #ccc;
         margin-bottom: 10px;
         padding: 10px;
+        position: relative; /* Um Positionierung für den edit-button zu ermöglichen */
     }
     .weekday-btn-container {
         display: flex;
@@ -69,10 +70,25 @@
         text-align: center;
 
     }
+    .edit-button {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        background-color: #2196F3;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 </style>
 </head>
 <body>
-    <h1>Wecker in Übersicht</h1>
+<h1>Wecker in Übersicht</h1>
 <div id="jsonContainer"></div>
 
 <script>
@@ -112,10 +128,11 @@
                         input.id = `${day.toLowerCase()}Checkbox`;
                         input.checked = daysValue[Object.keys(daysValue)[index]];
 
-                           // Preventing checkbox clicks
-                            checkbox.addEventListener('click', function(event) {
+                        // Preventing checkbox clicks
+                        checkbox.addEventListener('click', function(event) {
                             event.preventDefault();
                         });
+
                         const checkmark = document.createElement('span');
                         checkmark.classList.add('checkmark');
 
@@ -130,6 +147,17 @@
                     });
 
                     jsonElement.appendChild(weekdayContainer);
+
+                    const editButton = document.createElement('div'); // Jetzt innerhalb der Schleife erstellt
+                    editButton.classList.add('edit-button');
+                    editButton.innerHTML = '&#9998;';
+
+                    // Add click event for edit button
+                    editButton.addEventListener('click', function() {
+                        console.log('Edit button clicked');
+                    });
+
+                    jsonElement.appendChild(editButton); // Hinzufügen des edit-buttons zum JSON-Element
                     jsonContainer.appendChild(jsonElement);
                 });
             })
