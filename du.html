@@ -9,7 +9,7 @@
         border: 1px solid #ccc;
         margin-bottom: 10px;
         padding: 10px;
-        position: relative; /* Um Positionierung für den edit-button zu ermöglichen */
+        position: relative; /* Um Positionierung für die Buttons zu ermöglichen */
     }
     .weekday-btn-container {
         display: flex;
@@ -70,20 +70,28 @@
         text-align: center;
 
     }
-    .edit-button {
-        position: absolute;
-        bottom: 5px;
-        right: 5px;
-        background-color: #2196F3;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
+    .edit-button, .delete-button {
+        position: absolute; /* Änderung von fixed auf absolute */
         cursor: pointer;
+        width: 1.75em;
+        height: 1.75em;
         display: flex;
         justify-content: center;
         align-items: center;
+        border-radius: 50%;
+        font-size: 20px;
+    }
+    .edit-button {
+        background-color: #2196F3;
+        color: white;
+        bottom: 0.35em;
+        right: 2.65em;
+    }
+    .delete-button {
+        background-color: #FF0000;
+        color: white;
+        bottom: 0.35em;
+        right: 0.35em; /* Anpassung der Positionierung */
     }
 </style>
 </head>
@@ -151,13 +159,27 @@
                     const editButton = document.createElement('div'); // Jetzt innerhalb der Schleife erstellt
                     editButton.classList.add('edit-button');
                     editButton.innerHTML = '&#9998;';
+                    editButton.setAttribute('id', `${item.NameValue.name}-edit-button`);
 
                     // Add click event for edit button
                     editButton.addEventListener('click', function() {
-                        console.log('Edit button clicked');
+                        console.log('Edit button clicked for', item.NameValue.name);
                     });
 
                     jsonElement.appendChild(editButton); // Hinzufügen des edit-buttons zum JSON-Element
+
+                    const deleteButton = document.createElement('div'); // Jetzt innerhalb der Schleife erstellt
+                    deleteButton.classList.add('delete-button');
+                    deleteButton.innerHTML = '&#128465;';
+                    deleteButton.setAttribute('id', `${item.NameValue.name}-delete-button`);
+
+                    // Add click event for delete button
+                    deleteButton.addEventListener('click', function() {
+                        console.log('Delete button clicked for', item.NameValue.name);
+                    });
+
+                    jsonElement.appendChild(deleteButton); // Hinzufügen des delete-buttons zum JSON-Element
+
                     jsonContainer.appendChild(jsonElement);
                 });
             })
