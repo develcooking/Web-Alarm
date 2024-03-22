@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wochentags-Buttons</title>
+<title>Wecker in Übersicht</title>
 <style>
-    body {
+        .add {
         font-family: Arial, sans-serif;
         text-align: center;
+        padding-bottom: 1em;
     }
     .weekday-btn-container {
         display: flex;
@@ -35,14 +36,101 @@
     .timecl{
         padding: 1em;
     }
+    .json-element {
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        padding: 10px;
+        position: relative; /* Um Positionierung für die Buttons zu ermöglichen */
+    }
+    .weekday-btn-container {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .weekday-btn-container div {
+        margin-right: 10px;
+    }
+    .custom-checkbox {
+        position: relative;
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 5px;
+    }
+    .custom-checkbox input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 24px;
+        width: 24px;
+        background-color: #eee;
+        border-radius: 50%;
+        z-index: -1;
+    }
+    .custom-checkbox input:checked ~ .checkmark {
+        background-color: #54f17b;
+    }
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+    .custom-checkbox input:checked ~ .checkmark:after {
+        display: none;
+    }
+    .custom-checkbox .checkmark:after {
+        content: "";
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: white;
+    }
+    h1{
+        text-align: center;
+
+    }
+    .edit-button, .delete-button {
+        position: absolute; /* Änderung von fixed auf absolute */
+        cursor: pointer;
+        width: 1.75em;
+        height: 1.75em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        font-size: 20px;
+    }
+    .edit-button {
+        background-color: #2196F3;
+        color: white;
+        bottom: 0.35em;
+        right: 2.65em;
+    }
+    .delete-button {
+        background-color: #FF0000;
+        color: white;
+        bottom: 0.35em;
+        right: 0.35em; /* Anpassung der Positionierung */
+    }
 </style>
 </head>
 <body>
-  
-<h2>Wochentags-Buttons</h2>
-
+<h1>Wecker in Übersicht</h1>
+<div class="add">
 <form >
-    <label for="weckerName0">Name des Weckers:</label><br>
+    <p for="weckerName0">Name des Weckers:</label><br>
     <input type="text" id="weckerName"><br>
   </form>
 
@@ -82,15 +170,13 @@
 </div>
 
 <button onclick="saveData()">Speichern</button>
+</div>
+<div id="jsonContainer"></div>
 
 <script>
 
-    function saveData(){
-        saveName();
-        saveTime();
-        savedays();
-    }
-  
+
+      
     function saveName() {
     const nameElement = document.getElementById('weckerName');
     if (nameElement) {
@@ -149,6 +235,127 @@ function saveTime() {
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(daysValue));
     }
+
+
+    window.onload = function() {
+        fetchDataAndRender();
+    }
+     function fetchDataAndRender(){
+        fetch('/selectedTime')
+        .then(response => response.json())
+            .then(data => {      renderData(data); // Daten rendern
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }
+    function renderData(data) {
+        const jsonContainer = document.getElementById('jsonContainer');
+        jsonContainer.innerHTML = '';
+
+                data.forEach(item => {
+                    const jsonElement = document.createElement('div');
+                    jsonElement.classList.add('json-element');
+
+                    const name = document.createElement('p');
+                    name.textContent = `Name: ${item.NameValue.name}`;
+                    jsonElement.appendChild(name);
+
+                    const time = document.createElement('p');
+                    time.textContent = `Time: ${item.timeValue.time}`;
+                    jsonElement.appendChild(time);
+
+                    const daysValue = item.daysValue;
+
+                    const weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+
+                    const weekdayContainer = document.createElement('div');
+                    weekdayContainer.classList.add('weekday-btn-container');
+
+                    weekdays.forEach((day, index) => {
+                        const checkboxDiv = document.createElement('div');
+                        const checkbox = document.createElement('label');
+                        checkbox.classList.add('custom-checkbox');
+
+                        const input = document.createElement('input');
+                        input.type = 'checkbox';
+                        input.id = `${day.toLowerCase()}Checkbox`;
+                        input.checked = daysValue[Object.keys(daysValue)[index]];
+
+                        // Preventing checkbox clicks
+                        checkbox.addEventListener('click', function(event) {
+                            event.preventDefault();
+                        });
+
+                        const checkmark = document.createElement('span');
+                        checkmark.classList.add('checkmark');
+
+                        const labelText = document.createElement('span');
+                        labelText.textContent = day;
+                        checkbox.appendChild(input);
+                        checkbox.appendChild(checkmark);
+                        checkbox.appendChild(labelText);
+
+                        checkboxDiv.appendChild(checkbox);
+                        weekdayContainer.appendChild(checkboxDiv);
+                    });
+
+                    jsonElement.appendChild(weekdayContainer);
+
+                    const editButton = document.createElement('div'); // Jetzt innerhalb der Schleife erstellt
+                    editButton.classList.add('edit-button');
+                    editButton.innerHTML = '&#9998;';
+                    editButton.setAttribute('id', `${item.NameValue.name}-edit-button`);
+
+                    // Add click event for edit button
+                    editButton.addEventListener('click', function() {
+                        console.log('Edit button clicked for', item.NameValue.name);
+                    });
+
+                    jsonElement.appendChild(editButton); // Hinzufügen des edit-buttons zum JSON-Element
+
+                    const deleteButton = document.createElement('div');
+                deleteButton.classList.add('delete-button');
+                deleteButton.innerHTML = '&#128465;';
+                deleteButton.setAttribute('id', `${item.NameValue.name}-delete-button`);
+
+                // Add click event for delete button
+                deleteButton.addEventListener('click', function() {
+                    const name = item.NameValue.name;
+                    deleteAlarm(name);
+                });
+
+                    jsonElement.appendChild(deleteButton); // Hinzufügen des delete-buttons zum JSON-Element
+
+                    jsonContainer.appendChild(jsonElement);
+                });
+     }
+
+     function deleteAlarm(name) {
+        fetch('/deleteAlarm', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: name })
+        })
+        .then(response => response.text())
+        .then(message => {
+            console.log(message);
+            alert(message); // Benutzerfeedback anzeigen
+            fetchDataAndRender(); // Daten erneut abrufen und Benutzeroberfläche neu rendern
+        })
+        .catch(error => console.error('Error deleting alarm:', error));
+    }
+    function saveData() {
+    saveName();
+    saveTime();
+    savedays();
+    setTimeout(fetchDataAndRender, 50);// Daten nach dem Speichern neu abrufen und rendern
+    console.log("hi");
+    console.log("h2i");
+}
+
+
+
 </script>
 
 <script src="./time-pick.js"></script>
