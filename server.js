@@ -60,6 +60,28 @@ function saveSelection(nameValue, timeValue, daysValue) {
     });
 }
 
+// Funktion zum Löschen eines Weckers
+function deleteAlarm(name) {
+    readSelectedTimeclb((err, data) => {
+        if (err) {
+            console.error('Fehler beim Lesen der vorhandenen Daten:', err);
+            return;
+        }
+        
+        // Filtern der Wecker, um den zu löschenden Wecker zu finden
+        const filteredAlarms = data.filter(alarm => alarm.NameValue.name !== name);
+
+        const jsonString = JSON.stringify(filteredAlarms, null, 4);
+        const filePath = 'selectedTime.json';
+        fs.writeFile(filePath, jsonString, (err) => {
+            if (err) {
+                console.error('Fehler beim Speichern der Daten:', err);
+            } else {
+                console.log(`Wecker mit dem Namen "${name}" erfolgreich gelöscht.`);
+            }
+        });
+    });
+}
 
 // Funktion zum Verarbeiten der gespeicherten Daten
 function processSavedData() {
@@ -91,7 +113,6 @@ function readSelectedTime() {
         }
     });
 }
-
 
 // Funktion zum Lesen der ausgewählten Zeit
 function readSelectedTimeclb(callback) {
@@ -175,6 +196,17 @@ http.createServer((req, res) => {
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify(data));
             }
+        });
+    } else if (req.method === 'POST' && req.url === '/deleteAlarm') {
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+        req.on('end', () => {
+            const { name } = JSON.parse(body);
+            deleteAlarm(name); // Funktion zum Löschen des Weckers aufrufen
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
+            res.end(`Wecker mit dem Namen "${name}" erfolgreich gelöscht.`);
         });
     } else {
         let filePath = '.' + req.url;
