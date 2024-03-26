@@ -338,11 +338,12 @@ function saveTime() {
             body: JSON.stringify({ name: name })
         })
         .then(response => response.text())
-        .then(message => {
+       /* .then(message => {
             console.log(message);
             alert(message); // Benutzerfeedback anzeigen
             fetchDataAndRender(); // Daten erneut abrufen und Benutzeroberfläche neu rendern
-        })
+        })*/
+        .then ( fetchDataAndRender() )
         .catch(error => console.error('Error deleting alarm:', error));
     }
     function saveData() {

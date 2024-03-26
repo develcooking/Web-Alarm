@@ -2,9 +2,11 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
+const keypress = require('keypress');
 
 const PORT = process.env.PORT || 3000;
 
+let childProcess; // Variable global deklarieren
 let savedData = {
     name: null,
     time: null,
@@ -171,22 +173,22 @@ function playMP3(filePath) {
     }
 
     // Befehl zum Abspielen der Datei mit ffplay
-    const command = `ffplay -nodisp -autoexit "${filePath}"`;
+    const command = `ffplay -nodisp -autoexit "${filePath}" > /dev/null 2>&1`;
 
     // Ausführen des Befehls
-    const childProcess = exec(command, (error, stdout, stderr) => {
+    const childProcess = exec(command/*, (error, stdout, stderr) => {
         if (error) {
             console.error('Error:', error);
             return;
         }
         console.log('stdout:', stdout);
         console.error('stderr:', stderr);
-    });
+    }*/);
 
     // Eventuell können Sie noch eine Fehlerbehandlung hinzufügen
-    childProcess.on('error', (error) => {
+  /*  childProcess.on('error', (error) => {
         console.error('Error executing command:', error);
-    });
+    });*/
 }
 
 
@@ -194,12 +196,40 @@ function playMP3(filePath) {
 //const mp3FilePath = './sounds/Grioten_HIGH_4LERT.mp3';
 const mp3FilePath = './sounds/alarm-clock.mp3';
 
+// Funktion zum Überprüfen und Beenden des Prozesses
+function überprüfeUndBeendeProzess(prozessName) {
+    exec(`pgrep -x ${prozessName}`, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Fehler beim Überprüfen des Prozesses: ${error}`);
+            return;
+        }
+        if (stdout.trim() !== '') {
+            console.log(`Der Prozess ${prozessName} läuft. Beenden...`);
+            exec(`pkill -SIGTERM -x ${prozessName}`, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`Fehler beim Beenden des Prozesses: ${error}`);
+                    return;
+                }
+                console.log(`Prozess ${prozessName} wurde erfolgreich beendet.`);
+            });
+        } else {
+            console.log(`Der Prozess ${prozessName} läuft nicht.`);
+        }
+    });
+}
 
 
 
-
-
-
+keypress(process.stdin);
+process.stdin.on('keypress', function (ch, key) {
+    if (key && key.name === 'space') {
+        console.log('Leertaste gedrückt.');
+        überprüfeUndBeendeProzess('ffplay');
+    }
+});
+process.stdin.resume();
+process.stdin.setRawMode(true);
+// Tastatur-Eingaben aktivieren
 
 // Server erstellen
 http.createServer((req, res) => {
