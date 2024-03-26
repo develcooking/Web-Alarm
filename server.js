@@ -1,6 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const { exec } = require('child_process');
 
 const PORT = process.env.PORT || 3000;
 
@@ -9,25 +10,7 @@ let savedData = {
     time: null,
     days: null
 };
-/*
-// Funktion zum Speichern der Auswahl
-function saveSelection(NameValue, timeValue, daysValue) {
-    const data = {
-        NameValue,
-        timeValue,
-        daysValue
-    };
-    const jsonString = JSON.stringify(data, null, 4); // Hier wird ein Einzug von 4 Leerzeichen verwendet
-    const filePath = 'selectedTime.json';
-    fs.writeFile(filePath, jsonString, (err) => {
-        if (err) {
-            console.error('Fehler beim Speichern der Daten:', err);
-        } else {
-            console.log('Daten erfolgreich gespeichert.');
-            readSelectedTime();
-        }
-    });
-}*/
+
 
 // Funktion zum Speichern der Auswahl
 function saveSelection(nameValue, timeValue, daysValue) {
@@ -139,8 +122,77 @@ function readSelectedTimeclb(callback) {
 
 
 
+// Funktion zum Lesen der JSON-Datei und Ausführung von Aktionen bei Übereinstimmung
+function checkTimeAndPlay() {
+    const currentTime = new Date();
+    const currentHour = currentTime.getHours();
+    const currentMinute = currentTime.getMinutes();
+
+    // Laden der JSON-Datei mit den ausgewählten Zeiten
+    fs.readFile('selectedTime.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error('Fehler beim Lesen der JSON-Datei:', err);
+            return;
+        }
+
+        try {
+            const selectedTimes = JSON.parse(data);
+            // Durchlaufen aller ausgewählten Zeiten und Prüfen auf Übereinstimmung mit der aktuellen Zeit
+            selectedTimes.forEach(timeObj => {
+                const { timeValue, daysValue } = timeObj;
+                const { time } = timeValue;
+
+                // Zeit in Stunde und Minute aufteilen
+                const [hour, minute] = time.split(':').map(Number);
+
+                // Prüfen, ob die aktuelle Zeit mit der ausgewählten übereinstimmt und der Wochentag aktiviert ist
+                if (currentHour === hour && currentMinute === minute && daysValue[currentTime.toLocaleString('de-DE', { weekday: 'long' })]) {
+                    // Wenn Übereinstimmung, rufe playMP3 mit dem entsprechenden Dateinamen auf
+                    playMP3(mp3FilePath); // Annahme: Der Dateiname entspricht dem Namen im JSON und hat die Erweiterung .mp3
+                }
+            });
+        } catch (parseError) {
+            console.error('Fehler beim Parsen der JSON-Daten:', parseError);
+        }
+    });
+}
+
+// Funktion alle 30 Sekunden ausführen
+setInterval(checkTimeAndPlay, 60 * 1000);
 
 
+
+
+function playMP3(filePath) {
+    // Überprüfen, ob die Datei existiert
+    if (!fs.existsSync(filePath)) {
+        console.error('Die angegebene Datei existiert nicht.');
+        return;
+    }
+
+    // Befehl zum Abspielen der Datei mit ffplay
+    const command = `ffplay -nodisp -autoexit "${filePath}"`;
+
+    // Ausführen des Befehls
+    const childProcess = exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.error('Error:', error);
+            return;
+        }
+        console.log('stdout:', stdout);
+        console.error('stderr:', stderr);
+    });
+
+    // Eventuell können Sie noch eine Fehlerbehandlung hinzufügen
+    childProcess.on('error', (error) => {
+        console.error('Error executing command:', error);
+    });
+}
+
+
+// Aufruf der Funktion mit dem Pfad zur MP3-Datei
+//const mp3FilePath = './sounds/Grioten_HIGH_4LERT.mp3';
+const mp3FilePath = './sounds/alarm-clock.mp3';
 
 
 

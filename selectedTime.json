@@ -1,86 +1,18 @@
 [
     {
         "NameValue": {
-            "name": "da1"
+            "name": "1210"
         },
         "timeValue": {
-            "time": "08:06"
+            "time": "12:11"
         },
         "daysValue": {
-            "Montag": false,
-            "Dienstag": false,
-            "Mittwoch": false,
-            "Donnerstag": false,
-            "Freitag": false,
-            "Samstag": false,
-            "Sonntag": false
-        }
-    },
-    {
-        "NameValue": {
-            "name": "da2"
-        },
-        "timeValue": {
-            "time": "08:06"
-        },
-        "daysValue": {
-            "Montag": false,
-            "Dienstag": false,
-            "Mittwoch": false,
-            "Donnerstag": true,
-            "Freitag": false,
-            "Samstag": false,
-            "Sonntag": false
-        }
-    },
-    {
-        "NameValue": {
-            "name": "daw"
-        },
-        "timeValue": {
-            "time": "08:06"
-        },
-        "daysValue": {
-            "Montag": false,
-            "Dienstag": false,
-            "Mittwoch": false,
-            "Donnerstag": true,
-            "Freitag": false,
-            "Samstag": false,
-            "Sonntag": false
-        }
-    },
-    {
-        "NameValue": {
-            "name": "daa"
-        },
-        "timeValue": {
-            "time": "08:06"
-        },
-        "daysValue": {
-            "Montag": false,
-            "Dienstag": false,
-            "Mittwoch": false,
-            "Donnerstag": true,
-            "Freitag": false,
-            "Samstag": false,
-            "Sonntag": false
-        }
-    },
-    {
-        "NameValue": {
-            "name": "daaa"
-        },
-        "timeValue": {
-            "time": "07:07"
-        },
-        "daysValue": {
-            "Montag": false,
-            "Dienstag": false,
-            "Mittwoch": false,
+            "Montag": true,
+            "Dienstag": true,
+            "Mittwoch": true,
             "Donnerstag": true,
             "Freitag": true,
-            "Samstag": true,
+            "Samstag": false,
             "Sonntag": false
         }
     }
