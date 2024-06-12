@@ -8,15 +8,16 @@ to test install https://bun.sh and go to localhost:3000
 #Todo
 
 #high prio
-use wakeup names with hash values of the names
+- use wakeup names with hash values of the names
 
 #mid prio
-change audio files from Web via selection
-edit existing alarms
-try out https://tailwindcss.com/
+- change audio files from Web via selection
+- edit existing alarms
+- try out https://tailwindcss.com/
 
 #low prio
+- this project
 
 #made
-delete alarm clock
-get baking to work (audio)
+- delete alarm clock
+- get baking to work (audio)
