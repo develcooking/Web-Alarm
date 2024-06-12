@@ -321,6 +321,7 @@ function saveTime() {
                 deleteButton.addEventListener('click', function() {
                     const name = item.NameValue.name;
                     deleteAlarm(name);
+		    fetchDataAndRender();
                 });
 
                     jsonElement.appendChild(deleteButton); // Hinzufügen des delete-buttons zum JSON-Element
